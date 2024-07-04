@@ -10,8 +10,7 @@
 #define H6 64.
 #define H9 512.
 
-class FluidEmitter
-{
+class FluidEmitter {
 public:
     FluidEmitter(glm::dvec2 posn, double particlesPerSec, TotalFluidConstraint *fs);
     virtual ~FluidEmitter();

@@ -6,11 +6,10 @@
 class View;
 
 namespace Ui {
-    class MainWindow;
+class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
@@ -22,8 +21,6 @@ private:
 
 private slots:
     void changeTitle(const QString &title);
-
 };
 
 #endif // MAINWINDOW_H
-

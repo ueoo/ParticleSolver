@@ -2,14 +2,13 @@
 #define VIEW_H
 
 #include <GL/glew.h>
-#include <qgl.h>
 #include <QTime>
 #include <QTimer>
+#include <qgl.h>
 
 class ParticleApp;
 
-class View : public QGLWidget
-{
+class View : public QGLWidget {
     Q_OBJECT
 
 public:
@@ -48,8 +47,6 @@ signals:
 private:
     int m_width;
     int m_height;
-
 };
 
 #endif // VIEW_H
-

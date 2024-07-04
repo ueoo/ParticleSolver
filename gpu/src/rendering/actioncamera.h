@@ -3,8 +3,7 @@
 
 #include "camera.h"
 
-class ActionCamera : public Camera
-{
+class ActionCamera : public Camera {
 public:
     ActionCamera();
     ~ActionCamera();
@@ -19,7 +18,7 @@ public:
     void moveRelativeToLook(glm::vec3 dir);
 
 private:
-    glm::vec4 m_pos;//, m_offsetVec;
+    glm::vec4 m_pos; //, m_offsetVec;
     float m_offset;
     float m_offsetHeight;
 };

@@ -1,14 +1,13 @@
 #ifndef SOLVER_H
 #define SOLVER_H
 
+#include "lineareq.h"
 #include "matrix.h"
 #include "particle.h"
-#include "lineareq.h"
 
 #define RELAXATION_PARAMETER 1.
 
-class Solver
-{
+class Solver {
 public:
     Solver();
     virtual ~Solver();

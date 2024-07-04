@@ -7,8 +7,7 @@ class QKeyEvent;
 class ParticleSystem;
 class Renderer;
 
-class ParticleApp
-{
+class ParticleApp {
 public:
     ParticleApp();
     ~ParticleApp();
@@ -35,7 +34,7 @@ private:
     bool m_mouseDownL;
     bool m_mouseDownR;
 
-    bool m_fluidEmmiterOn;
+    bool m_fluidEmitterOn;
     float m_timer;
 };
 

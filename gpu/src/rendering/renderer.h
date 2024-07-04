@@ -2,8 +2,8 @@
 #define RENDERER_H
 
 #include <glm/glm.hpp>
-#include <vector_types.h>
 #include <vector>
+#include <vector_types.h>
 
 typedef unsigned int GLuint;
 typedef unsigned int uint;
@@ -11,8 +11,7 @@ class ActionCamera;
 class QMouseEvent;
 class QKeyEvent;
 
-class Renderer
-{
+class Renderer {
 public:
     Renderer(int3 minBounds, int3 maxBounds);
     ~Renderer();
@@ -26,12 +25,12 @@ public:
     float3 getDir(float x, float y);
     float3 getEye();
 
-//    void mousePressed(QMouseEvent *e);
+    //    void mousePressed(QMouseEvent *e);
     void mouseMoved(QMouseEvent *, float deltaX, float deltaY);
-//    void mouseScrolled(QWheelEvent *e);
+    //    void mouseScrolled(QWheelEvent *e);
 
-    void keyPressed(QKeyEvent* e);
-    void keyReleased(QKeyEvent* e);
+    void keyPressed(QKeyEvent *e);
+    void keyReleased(QKeyEvent *e);
 
     void update(float secs);
 
@@ -43,7 +42,6 @@ private:
 
     void _buildGrid(int3 minBounds, int3 maxBounds);
     void _setGridBuffer(float *data, int memsize);
-
 
     GLuint m_program;
     GLuint m_vbo;
@@ -58,7 +56,6 @@ private:
 
     float m_particleRadius;
     int m_wsadeq;
-
 };
 
 #endif // RENDERER_H

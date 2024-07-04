@@ -1,15 +1,14 @@
 #include "view.h"
-#include <QMainWindow>
+#include "particleapp.h"
 #include <QApplication>
 #include <QKeyEvent>
+#include <QMainWindow>
 #include <iostream>
-#include "particleapp.h"
 
 View::View(QGLFormat format, QWidget *parent)
     : QGLWidget(format, parent),
       m_width(parent->width()),
-      m_height(parent->height())
-{
+      m_height(parent->height()) {
     // View needs all mouse move events, not just mouse drag events
     setMouseTracking(true);
 
@@ -25,14 +24,12 @@ View::View(QGLFormat format, QWidget *parent)
     m_app = NULL;
 }
 
-View::~View()
-{
+View::~View() {
     if (m_app)
         delete m_app;
 }
 
-void View::initializeGL()
-{
+void View::initializeGL() {
     // All OpenGL initialization *MUST* be done during or after this
     // method. Before this method is called, there is no active OpenGL
     // context and all OpenGL calls have no effect.
@@ -40,10 +37,9 @@ void View::initializeGL()
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     glGetError(); // Clear errors after call to glewInit
-    if (GLEW_OK != err)
-    {
-      // Problem: glewInit failed, something is seriously wrong.
-      fprintf(stderr, "Error initializing glew: %s\n", glewGetErrorString(err));
+    if (GLEW_OK != err) {
+        // Problem: glewInit failed, something is seriously wrong.
+        fprintf(stderr, "Error initializing glew: %s\n", glewGetErrorString(err));
     }
 
     // init the App object.
@@ -78,19 +74,17 @@ void View::initializeGL()
     QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 }
 
-void View::paintGL()
-{
+void View::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(.3f, .3f, .3f, 1.f);
 
-    QString title = "PARTICLES TEST      FPS: " + QString::number((int) fps);
+    QString title = "PARTICLES TEST      FPS: " + QString::number((int)fps);
     emit changeTitle(title);
 
     m_app->render();
 }
 
-void View::resizeGL(int w, int h)
-{
+void View::resizeGL(int w, int h) {
     glViewport(0, 0, w, h);
 
     m_width = w;
@@ -99,15 +93,13 @@ void View::resizeGL(int w, int h)
     m_app->resize(w, h);
 }
 
-void View::mousePressEvent(QMouseEvent *e)
-{
+void View::mousePressEvent(QMouseEvent *e) {
     float x = (e->x() * 2.f / m_width) - 1.f;
     float y = 1.f - (e->y() * 2.f / m_height);
     m_app->mousePressed(e, x, y);
 }
 
-void View::mouseMoveEvent(QMouseEvent *event)
-{
+void View::mouseMoveEvent(QMouseEvent *event) {
     // This starter code implements mouse capture, which gives the change in
     // mouse position since the last mouse movement. The mouse needs to be
     // recentered after every movement because it might otherwise run into
@@ -120,7 +112,8 @@ void View::mouseMoveEvent(QMouseEvent *event)
 
     int deltaXI = event->x() - halfWidthI;
     int deltaYI = event->y() - halfHightI;
-    if (!deltaXI && !deltaYI) return;
+    if (!deltaXI && !deltaYI)
+        return;
 
     QCursor::setPos(mapToGlobal(QPoint(halfWidthI, halfHightI)));
 
@@ -134,32 +127,28 @@ void View::mouseMoveEvent(QMouseEvent *event)
     m_app->mouseMoved(event, deltaX, deltaY);
 }
 
-void View::mouseReleaseEvent(QMouseEvent *e)
-{
+void View::mouseReleaseEvent(QMouseEvent *e) {
     float x = (e->x() * 2.f / m_width) - 1.f;
     float y = 1.f - (e->y() * 2.f / m_height);
     m_app->mouseReleased(e, x, y);
 }
 
-void View::wheelEvent(QWheelEvent *e)
-{
+void View::wheelEvent(QWheelEvent *e) {
     m_app->mouseScrolled(e);
 }
 
-void View::keyPressEvent(QKeyEvent *event)
-{
-    if (event->key() == Qt::Key_Escape) QApplication::quit();
+void View::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_Escape)
+        QApplication::quit();
 
     m_app->keyPressed(event);
 }
 
-void View::keyReleaseEvent(QKeyEvent *e)
-{
+void View::keyReleaseEvent(QKeyEvent *e) {
     m_app->keyReleased(e);
 }
 
-void View::tick()
-{
+void View::tick() {
     // Get the number of seconds since the last tick (variable update rate)
     float seconds = time.restart() * 0.001f;
     fps = .02f / seconds + .98f * fps;

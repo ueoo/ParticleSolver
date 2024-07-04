@@ -4,22 +4,22 @@
 #define GLM_FORCE_RADIANS
 
 // Standard includes
-#include <stdlib.h>
 #include <iostream>
+#include <stdlib.h>
 
 // GL includes
 #define GL_GLEXT_PROTOTYPES
-#include <qgl.h>
 #include <GL/glu.h>
+#include <qgl.h>
 
 // GLM includes
-#include <glm/vec2.hpp>
 #include <glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/vec2.hpp>
 
 // Qt data includes
-#include <QList>
 #include <QHash>
+#include <QList>
 
 // Generally helpful functions
 inline float frand() { return (double)rand() / (double)RAND_MAX; }

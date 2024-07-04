@@ -1,17 +1,16 @@
 #ifndef SMOKEEMITTER_H
 #define SMOKEEMITTER_H
 
+#include "gasconstraint.h"
 #include "includes.h"
 #include "particle.h"
-#include "gasconstraint.h"
 
 #define H 2.
 #define H2 4.
 #define H6 64.
 #define H9 512.
 
-class OpenSmokeEmitter
-{
+class OpenSmokeEmitter {
 public:
     OpenSmokeEmitter(glm::dvec2 posn, double particlesPerSec, GasConstraint *gs);
     virtual ~OpenSmokeEmitter();

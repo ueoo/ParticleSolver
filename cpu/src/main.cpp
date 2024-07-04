@@ -1,8 +1,7 @@
-#include <QtGui/QApplication>
 #include "mainwindow.h"
+#include <QApplication>
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
     MainWindow w;
 
@@ -12,8 +11,7 @@ int main(int argc, char *argv[])
 
     w.setFixedSize(800, 800);
     w.show();
-//    w.setWindowState(w.windowState() | Qt::WindowFullScreen); // Comment out this line to have a windowed 800x600 game on startup.
+    //    w.setWindowState(w.windowState() | Qt::WindowFullScreen); // Comment out this line to have a windowed 800x600 game on startup.
 
     return a.exec();
 }
-

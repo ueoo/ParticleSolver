@@ -6,8 +6,7 @@
 #include <QTime>
 #include <QTimer>
 
-class View : public QGLWidget
-{
+class View : public QGLWidget {
     Q_OBJECT
 
 public:
@@ -17,7 +16,8 @@ public:
 private:
     QTime time;
     QTimer timer;
-    double fps, tickTime;
+    double fps;
+    double tickTime;
     double scale;
     bool timestepMode;
 
@@ -43,4 +43,3 @@ private slots:
 };
 
 #endif // VIEW_H
-

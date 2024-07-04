@@ -1,7 +1,6 @@
 #include "solver.h"
 
-Solver::Solver()
-{
+Solver::Solver() {
     m_b = new double[2];
     m_gamma = new double[2];
     m_nCons = -1;
@@ -11,21 +10,18 @@ Solver::Solver()
     m_nParts = -1;
 }
 
-Solver::~Solver()
-{
+Solver::~Solver() {
     delete[] m_b;
     delete[] m_gamma;
     delete[] m_dp;
     delete[] m_counts;
 }
 
-int Solver::getCount(int idx)
-{
+int Solver::getCount(int idx) {
     return m_counts[idx];
 }
 
-void Solver::setupM(QList<Particle *> *particles, bool contact)
-{
+void Solver::setupM(QList<Particle *> *particles, bool contact) {
     m_invM.reset(particles->size() * 2, particles->size() * 2);
     for (int i = 0; i < particles->size(); i++) {
 
@@ -36,8 +32,7 @@ void Solver::setupM(QList<Particle *> *particles, bool contact)
     }
 }
 
-void Solver::setupSizes(int numParts, QList<Constraint *> *constraints)
-{
+void Solver::setupSizes(int numParts, QList<Constraint *> *constraints) {
     bool change = true;
     int numCons = constraints->size();
 
@@ -73,8 +68,7 @@ void Solver::setupSizes(int numParts, QList<Constraint *> *constraints)
     }
 }
 
-void Solver::solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *constraints, bool stabile)
-{
+void Solver::solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *constraints, bool stabile) {
     if (constraints->size() == 0) {
         return;
     }
@@ -100,18 +94,18 @@ void Solver::solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *c
 
     SparseMatrix temp = m_invM * m_JT;
     m_A = m_JT.getTranspose() * temp;
-//    m_JT.printMatrix(4,false);
+    // m_JT.printMatrix(4,false);
     m_eq.setA(&m_A);
-//    cout << endl;
-//    for (int i = 0; i < particles->size(); i++) {
-//        printf("%.4f\n", m_b[i]);
-//    }
+    // cout << endl;
+    // for (int i = 0; i < particles->size(); i++) {
+    //     printf("%.4f\n", m_b[i]);
+    // }
     bool result = m_eq.solve(m_b, m_gamma);
-//    cout << result << endl;
-//    for (int i = 0; i < particles->size(); i++) {
-//        printf("%.4f\n", m_gamma[i]);
-//    }
-//    cout << endl;
+    // cout << result << endl;
+    // for (int i = 0; i < particles->size(); i++) {
+    //     printf("%.4f\n", m_gamma[i]);
+    // }
+    // cout << endl;
     temp.multiply(m_dp, m_gamma, particles->size() * 2, 1);
 
     for (int i = 0; i < particles->size(); i++) {
@@ -120,7 +114,7 @@ void Solver::solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *c
         double mult = n > 0 ? (RELAXATION_PARAMETER / (double)n) : 0.,
                dx = m_dp[2 * i] * mult,
                dy = m_dp[2 * i + 1] * mult;
-//        cout << dx << " " << dy << endl;
+        // cout << dx << " " << dy << endl;
 
         p->ep.x += (fabs(dx) > EPSILON ? dx : 0);
         p->ep.y += (fabs(dy) > EPSILON ? dy : 0);

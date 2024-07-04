@@ -17,12 +17,12 @@ SOURCES += src/main.cpp \
     src/mainwindow.cpp \
     src/view.cpp \
     src/simulation.cpp \
+    src/particle.cpp \
     src/constraint/distanceconstraint.cpp \
     src/solver/lineareq.cpp \
     src/solver/matrix.cpp \
     src/solver/matrix.inl \
     src/solver/solver.cpp \
-    src/solver/particle.cpp \
     src/constraint/totalshapeconstraint.cpp \
     src/constraint/boundaryconstraint.cpp \
     src/constraint/contactconstraint.cpp \
@@ -51,11 +51,14 @@ HEADERS += src/mainwindow.h \
     src/fluidemitter.h
 
 # UMFPACK
-INCLUDEPATH += $$PWD/lib/umfpack/include
-LIBS += -L$$PWD/lib/umfpack \
-        -lumfpack \
-        -lamd \
-        #-lblas \
-        #-lcerbla
+# INCLUDEPATH += $$PWD/lib/umfpack/include
+# LIBS += -L$$PWD/lib/umfpack \
+#         -lumfpack \
+#         -lamd \
+#         #-lblas \
+#         #-lcerbla
+
+LIBS += -lumfpack -lamd -lcholmod -lcolamd -lccolamd -lsuitesparseconfig -lblas -llapack
+INCLUDEPATH += /usr/include/suitesparse
 
 FORMS += src/mainwindow.ui

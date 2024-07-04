@@ -7,32 +7,30 @@
  * passed to the corresponding render or particlesystem class.
  */
 
-#include <cuda_runtime.h>
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QWheelEvent>
-#include <QKeyEvent>
+#include <cuda_runtime.h>
 #include <random>
 #include <unistd.h>
 
+#include "helper_math.h"
 #include "particleapp.h"
 #include "particlesystem.h"
 #include "renderer.h"
-#include "helper_math.h"
 #include "util.cuh"
 
 #define MAX_PARTICLES 15000 // (vbo size)
 #define PARTICLE_RADIUS 0.25f
 #define GRID_SIZE make_uint3(64, 64, 64) // 3D
 
-
 ParticleApp::ParticleApp()
     : m_particleSystem(NULL),
       m_renderer(NULL),
       m_mouseDownL(false),
       m_mouseDownR(false),
-      m_fluidEmmiterOn(false),
-      m_timer(-1.f)
-{
+      m_fluidEmitterOn(false),
+      m_timer(-1.f) {
     cudaInit();
 
     m_particleSystem = new ParticleSystem(PARTICLE_RADIUS, GRID_SIZE, MAX_PARTICLES, make_int3(-50, 0, -50), make_int3(50, 200, 50), 5);
@@ -42,9 +40,7 @@ ParticleApp::ParticleApp()
     makeInitScene();
 }
 
-
-ParticleApp::~ParticleApp()
-{
+ParticleApp::~ParticleApp() {
     if (m_particleSystem)
         delete m_particleSystem;
     if (m_renderer)
@@ -58,22 +54,17 @@ ParticleApp::~ParticleApp()
     cudaDeviceReset();
 }
 
-inline float frand()
-{
-    return rand() / (float) RAND_MAX;
+inline float frand() {
+    return rand() / (float)RAND_MAX;
 }
 
-void ParticleApp::makeInitScene()
-{
+void ParticleApp::makeInitScene() {
     m_particleSystem->addRope(make_float3(0, 20, 0), make_float3(0, -.5, 0), .4f, 32, 1.f, true);
 }
 
-
-void ParticleApp::tick(float secs)
-{
-    if (m_fluidEmmiterOn && m_timer <= 0.f)
-    {
-        m_particleSystem->addFluid(make_int3(-1,0,-1), make_int3(1,1,1), 1.f, 1.f, make_float3(0,0,1));
+void ParticleApp::tick(float secs) {
+    if (m_fluidEmitterOn && m_timer <= 0.f) {
+        m_particleSystem->addFluid(make_int3(-1, 0, -1), make_int3(1, 1, 1), 1.f, 1.f, make_float3(0, 0, 1));
         m_timer = 0.1f;
     }
     m_timer -= secs;
@@ -82,64 +73,46 @@ void ParticleApp::tick(float secs)
     m_renderer->update(secs);
 }
 
-
-void ParticleApp::render()
-{
+void ParticleApp::render() {
     m_renderer->render(m_particleSystem->getColorIndex(), m_particleSystem->getColors());
 }
 
-
-void ParticleApp::mousePressed(QMouseEvent *e, float x, float y)
-{
+void ParticleApp::mousePressed(QMouseEvent *e, float x, float y) {
     // shoot a particle into the sceen on left mouse click
-    if (e->button() == Qt::LeftButton)
-    {
+    if (e->button() == Qt::LeftButton) {
         m_particleSystem->setParticleToAdd(m_renderer->getEye(), m_renderer->getDir(x, y) * 30.f, 2.f);
         m_mouseDownL = true;
-    }
-    else if (e->button() == Qt::RightButton)
-    {
+    } else if (e->button() == Qt::RightButton) {
         m_mouseDownR = true;
     }
-
 }
 
-void ParticleApp::mouseReleased(QMouseEvent *e, float, float)
-{
-    if (e->button() == Qt::LeftButton)
-    {
+void ParticleApp::mouseReleased(QMouseEvent *e, float, float) {
+    if (e->button() == Qt::LeftButton) {
         m_mouseDownL = false;
     }
-    if (e->button() == Qt::RightButton)
-    {
+    if (e->button() == Qt::RightButton) {
         m_mouseDownR = false;
     }
 }
 
-
-void ParticleApp::mouseMoved(QMouseEvent *e, float deltaX, float deltaY)
-{
+void ParticleApp::mouseMoved(QMouseEvent *e, float deltaX, float deltaY) {
     m_renderer->mouseMoved(e, deltaX, deltaY);
 }
 
 void ParticleApp::mouseScrolled(QWheelEvent *) {}
 
-
-void ParticleApp::keyPressed(QKeyEvent *e)
-{
+void ParticleApp::keyPressed(QKeyEvent *e) {
     m_renderer->keyPressed(e);
 }
 
-void ParticleApp::keyReleased(QKeyEvent *e)
-{
+void ParticleApp::keyReleased(QKeyEvent *e) {
     bool resetVbo = true;
     float3 h, vec;
     float angle;
 
-
     // numbers 0-9 toggle different scenes
-    switch (e->key())
-    {
+    switch (e->key()) {
     case Qt::Key_1: // single rope
         delete m_particleSystem;
         m_particleSystem = new ParticleSystem(PARTICLE_RADIUS, GRID_SIZE, MAX_PARTICLES, make_int3(-50, 0, -50), make_int3(50, 200, 50), 5);
@@ -148,7 +121,7 @@ void ParticleApp::keyReleased(QKeyEvent *e)
     case Qt::Key_2: // single cloth
         delete m_particleSystem;
         m_particleSystem = new ParticleSystem(PARTICLE_RADIUS, GRID_SIZE, MAX_PARTICLES, make_int3(-50, 0, -50), make_int3(50, 200, 50), 5);
-        m_particleSystem->addHorizCloth(make_int2(0, -3), make_int2(6,3), make_float3(.5f,7.f,.5f), make_float2(.3f, .3f), 3.f, false);
+        m_particleSystem->addHorizCloth(make_int2(0, -3), make_int2(6, 3), make_float3(.5f, 7.f, .5f), make_float2(.3f, .3f), 3.f, false);
         break;
     case Qt::Key_3: // two fluids, different densities
         delete m_particleSystem;
@@ -197,11 +170,10 @@ void ParticleApp::keyReleased(QKeyEvent *e)
         m_particleSystem = new ParticleSystem(PARTICLE_RADIUS, GRID_SIZE, MAX_PARTICLES, make_int3(-50, 0, -50), make_int3(50, 200, 50), 5);
 
         h = make_float3(0, 10, 0);
-        for(int i = 0; i < 50; i++)
-        {
+        for (int i = 0; i < 50; i++) {
             angle = M_PI * i * 0.02f;
             vec = make_float3(cos(angle), sin(angle), 0.f);
-            m_particleSystem->addRope(vec*5.f + h, vec*.5f, .35f, 30, 1.f, true);
+            m_particleSystem->addRope(vec * 5.f + h, vec * .5f, .35f, 30, 1.f, true);
         }
         m_particleSystem->addStaticSphere(make_int3(-4, 7, -4), make_int3(4, 16, 4), .5f);
 
@@ -211,24 +183,19 @@ void ParticleApp::keyReleased(QKeyEvent *e)
         m_particleSystem = new ParticleSystem(PARTICLE_RADIUS, GRID_SIZE, MAX_PARTICLES, make_int3(-50, 0, -50), make_int3(50, 200, 50), 5);
         break;
     case Qt::Key_Space: // toggle fluids at origin
-        m_fluidEmmiterOn = !m_fluidEmmiterOn;
+        m_fluidEmitterOn = !m_fluidEmitterOn;
         break;
     default:
         resetVbo = false;
         m_renderer->keyReleased(e);
         break;
     }
-    if (resetVbo)
-    {
+    if (resetVbo) {
         m_renderer->createVAO(m_particleSystem->getCurrentReadBuffer(),
                               m_particleSystem->getParticleRadius());
     }
 }
 
-
-void ParticleApp::resize(int w, int h)
-{
+void ParticleApp::resize(int w, int h) {
     m_renderer->resize(w, h);
 }
-
-

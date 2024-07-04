@@ -1,0 +1,28 @@
+# Particles CPU
+
+## Setup VS Code
+
+`c_cpp_properties.json`:
+
+```JSON
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/cpu/**",
+                "/usr/include/x86_64-linux-gnu/qt5/**",
+                "${workspaceFolder}/build"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang-14",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}
+```
+
+```bash
+bash make_cpu.sh
+```

@@ -1,26 +1,25 @@
 #ifndef PARTICLESYSTEM_H
 #define PARTICLESYSTEM_H
 
+#include "helper_math.h"
 #include "kernel.cuh"
 #include <deque>
 #include <vector>
-#include "helper_math.h"
 
 typedef unsigned int GLuint;
 typedef unsigned int uint;
 
 const int numColors = 8;
-const float3 colors[numColors] = {  make_float3(.722f, .141f, .447f),
-                                    make_float3(.886f, .455f, .173f),
-                                    make_float3(.110f, .569f, .478f),
-                                    make_float3(.588f, .824f, .161f),
-                                    make_float3(.722f, .267f, .506f),
-                                    make_float3(.831f, .345f, .031f),
-                                    make_float3(.020f, .533f, .431f),
-                                    make_float3(.506f, .773f, .027f)};
+const float3 colors[numColors] = {make_float3(.722f, .141f, .447f),
+                                  make_float3(.886f, .455f, .173f),
+                                  make_float3(.110f, .569f, .478f),
+                                  make_float3(.588f, .824f, .161f),
+                                  make_float3(.722f, .267f, .506f),
+                                  make_float3(.831f, .345f, .031f),
+                                  make_float3(.020f, .533f, .431f),
+                                  make_float3(.506f, .773f, .027f)};
 
-class ParticleSystem
-{
+class ParticleSystem {
 public:
     ParticleSystem(float particleRadius, uint3 gridSize, uint maxParticles, int3 minBounds, int3 maxBounds, int iterations);
     ~ParticleSystem();
@@ -51,7 +50,7 @@ public:
     int3 getMinBounds() { return m_minBounds; }
     int3 getMaxBounds() { return m_maxBounds; }
 
-//    float4 mousePos;
+    //    float4 mousePos;
 
 private:
     void _init(uint numParticles, uint maxParticles);
@@ -78,18 +77,18 @@ private:
     // GPU data
     float *m_dSortedPos;
     float *m_dSortedW;
-    int   *m_dSortedPhase;
+    int *m_dSortedPhase;
 
     // grid data for sorting method
-    uint  *m_dGridParticleHash; // grid hash value for each particle
-    uint  *m_dGridParticleIndex;// particle index for each particle
-    uint  *m_dCellStart;        // index of start of each cell in sorted list
-    uint  *m_dCellEnd;          // index of end of cell
+    uint *m_dGridParticleHash;  // grid hash value for each particle
+    uint *m_dGridParticleIndex; // particle index for each particle
+    uint *m_dCellStart;         // index of start of each cell in sorted list
+    uint *m_dCellEnd;           // index of end of cell
 
-    uint   m_gridSortBits;
+    uint m_gridSortBits;
 
     // vertex buffer object for particle positions
-    GLuint   m_posVbo;
+    GLuint m_posVbo;
 
     // handles OpenGL-CUDA exchange
     struct cudaGraphicsResource *m_cuda_posvbo_resource;

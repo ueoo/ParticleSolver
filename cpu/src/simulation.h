@@ -1,11 +1,11 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
-#include "includes.h"
-#include "particle.h"
-#include "opensmokeemitter.h"
-#include "solver.h"
 #include "fluidemitter.h"
+#include "includes.h"
+#include "opensmokeemitter.h"
+#include "particle.h"
+#include "solver.h"
 
 // Number of solver iterations per timestep
 #define SOLVER_ITERATIONS 3
@@ -14,7 +14,7 @@
 #define ITERATIVE
 
 // Use stabilization pass or not, and if so how many iterations
-//#define USE_STABILIZATION
+// #define USE_STABILIZATION
 #define STABILIZATION_ITERATIONS 2
 
 // Gravity scaling factor for gases
@@ -42,8 +42,7 @@ enum SimulationType {
 };
 
 // The basic simulation, implementing the "main solve loop" from the paper.
-class Simulation
-{
+class Simulation {
 public:
     Simulation();
     virtual ~Simulation();
@@ -80,7 +79,6 @@ public:
     bool debug;
 
 private:
-
     // Reset the simulation
     void clear();
 
@@ -109,7 +107,7 @@ private:
     QList<Body *> m_bodies;
     QList<OpenSmokeEmitter *> m_smokeEmitters;
     QList<FluidEmitter *> m_fluidEmitters;
-    QHash<ConstraintGroup, QList<Constraint *> > m_globalConstraints;
+    QHash<ConstraintGroup, QList<Constraint *>> m_globalConstraints;
 
     // Solvers for regular and contact constraints
     Solver m_standardSolver;

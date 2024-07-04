@@ -15,8 +15,7 @@
  * perform the camera calculations.
  *
  */
-class OrbitingCamera
-{
+class OrbitingCamera {
 public:
     OrbitingCamera();
     virtual ~OrbitingCamera();

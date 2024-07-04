@@ -1,24 +1,24 @@
 #include "renderer.h"
-#include <GL/glew.h>
-#include <QFile>
-#include <QTextStream>
-#include <QImage>
-#include <QDir>
-#include <QGLWidget>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <string>
-#include <sstream>
-#include <vector>
 #include "actioncamera.h"
 #include "helper_math.h"
 #include "kernel.cuh"
+#include <GL/glew.h>
+#include <QDir>
+#include <QFile>
+#include <QGLWidget>
+#include <QImage>
+#include <QMouseEvent>
+#include <QTextStream>
+#include <QWheelEvent>
+#include <sstream>
+#include <string>
+#include <vector>
 
 #define GLM_FORCE_RADIANS
 #include <gtc/type_ptr.hpp>
 #include <gtx/norm.hpp>
 
-//#include"debugprinting.h"
+// #include"debugprinting.h"
 
 Renderer::Renderer(int3 minBounds, int3 maxBounds)
     : m_program(0),
@@ -29,8 +29,7 @@ Renderer::Renderer(int3 minBounds, int3 maxBounds)
       m_numGridVerts(0),
       m_camera(NULL),
       m_particleRadius(0),
-      m_wsadeq(0)
-{
+      m_wsadeq(0) {
     _initGL();
     m_camera = new ActionCamera();
     m_camera->setOffset(0.f);
@@ -40,9 +39,7 @@ Renderer::Renderer(int3 minBounds, int3 maxBounds)
     _buildGrid(minBounds, maxBounds);
 }
 
-
-Renderer::~Renderer()
-{
+Renderer::~Renderer() {
     if (m_vbo)
         glDeleteBuffers(1, &m_vbo);
     if (m_vao)
@@ -57,9 +54,7 @@ Renderer::~Renderer()
         delete m_camera;
 }
 
-
-void Renderer::createVAO(GLuint vbo, float radius)
-{
+void Renderer::createVAO(GLuint vbo, float radius) {
     if (m_vbo && m_vbo != vbo)
         glDeleteBuffers(1, &m_vbo);
     if (m_vao)
@@ -84,7 +79,7 @@ void Renderer::createVAO(GLuint vbo, float radius)
         GL_FLOAT,            // Type
         GL_FALSE,            // Normalized
         sizeof(GLfloat) * 4, // Stride
-        (void*) 0            // Array buffer offset
+        (void *)0            // Array buffer offset
     );
 
     // Unbind buffers.
@@ -92,10 +87,8 @@ void Renderer::createVAO(GLuint vbo, float radius)
     glBindVertexArray(0);
 }
 
-
-void Renderer::render(std::vector<int2> colorIndices, std::vector<float4> colors)
-{
-    glEnable(GL_BLEND); //Enable blending.
+void Renderer::render(std::vector<int2> colorIndices, std::vector<float4> colors) {
+    glEnable(GL_BLEND); // Enable blending.
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glm::mat4 projView = m_camera->getProjectionViewMatrix();
@@ -121,7 +114,6 @@ void Renderer::render(std::vector<int2> colorIndices, std::vector<float4> colors
     glUniform4f(colorLoc, .5f, .5f, .5f, 1.f);
     glDrawArrays(GL_LINES, 4, m_numGridVerts);
 
-
     // Draw points
     glUniform1f(glGetUniformLocation(m_program, "particleRadius"), m_particleRadius);
     glEnable(GL_PROGRAM_POINT_SIZE);
@@ -131,8 +123,7 @@ void Renderer::render(std::vector<int2> colorIndices, std::vector<float4> colors
     int size = colors.size();
     int2 index;
     float4 color;
-    for (int i = 0; i < size; i++)
-    {
+    for (int i = 0; i < size; i++) {
         index = colorIndices.at(i);
         color = colors.at(i);
         glUniform4f(colorLoc, color.x, color.y, color.z, color.w);
@@ -142,13 +133,11 @@ void Renderer::render(std::vector<int2> colorIndices, std::vector<float4> colors
 
     glDisable(GL_PROGRAM_POINT_SIZE);
 
-    glDisable(GL_BLEND); //Enable blending.
+    glDisable(GL_BLEND); // Enable blending.
     glUseProgram(0);
 }
 
-
-GLuint Renderer::_compileProgram(const char *vertex_file_path, const char *fragment_file_path)
-{
+GLuint Renderer::_compileProgram(const char *vertex_file_path, const char *fragment_file_path) {
     // NOTE: MUST INIT GLEW BEFORE USING THIS CODE
 
     // Create the shaders
@@ -159,17 +148,16 @@ GLuint Renderer::_compileProgram(const char *vertex_file_path, const char *fragm
     std::string VertexShaderCode;
     QString vertFilePath = QString(vertex_file_path);
     QFile vertFile(vertFilePath);
-    if (vertFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if (vertFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream vertStream(&vertFile);
         VertexShaderCode = vertStream.readAll().toStdString();
     }
-
 
     // Read fragment shader code from file
     std::string FragmentShaderCode;
     QString fragFilePath = QString(fragment_file_path);
     QFile fragFile(fragFilePath);
-    if (fragFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if (fragFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream fragStream(&fragFile);
         FragmentShaderCode = fragStream.readAll().toStdString();
     }
@@ -178,8 +166,8 @@ GLuint Renderer::_compileProgram(const char *vertex_file_path, const char *fragm
     int InfoLogLength;
 
     // Compile Vertex Shader
-    char const * VertexSourcePointer = VertexShaderCode.c_str();
-    glShaderSource(VertexShaderID, 1, &VertexSourcePointer , NULL);
+    char const *VertexSourcePointer = VertexShaderCode.c_str();
+    glShaderSource(VertexShaderID, 1, &VertexSourcePointer, NULL);
     glCompileShader(VertexShaderID);
 
     // Check Vertex Shader
@@ -192,8 +180,8 @@ GLuint Renderer::_compileProgram(const char *vertex_file_path, const char *fragm
                 vertex_file_path, &VertexShaderErrorMessage[0]);
 
     // Compile Fragment Shader
-    char const * FragmentSourcePointer = FragmentShaderCode.c_str();
-    glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer , NULL);
+    char const *FragmentSourcePointer = FragmentShaderCode.c_str();
+    glShaderSource(FragmentShaderID, 1, &FragmentSourcePointer, NULL);
     glCompileShader(FragmentShaderID);
 
     // Check Fragment Shader
@@ -214,7 +202,7 @@ GLuint Renderer::_compileProgram(const char *vertex_file_path, const char *fragm
     // Check the program
     glGetProgramiv(programId, GL_LINK_STATUS, &Result);
     glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &InfoLogLength);
-    std::vector<char> ProgramErrorMessage( std::max(InfoLogLength, int(1)) );
+    std::vector<char> ProgramErrorMessage(std::max(InfoLogLength, int(1)));
     glGetProgramInfoLog(programId, InfoLogLength, NULL, &ProgramErrorMessage[0]);
     if (!Result)
         fprintf(stderr, "Error linking shader: %s\n", &ProgramErrorMessage[0]);
@@ -225,17 +213,15 @@ GLuint Renderer::_compileProgram(const char *vertex_file_path, const char *fragm
     return programId;
 }
 
-
-float4 Renderer::raycast2XYPlane(float x, float y)
-{
+float4 Renderer::raycast2XYPlane(float x, float y) {
     glm::mat4 ftw = glm::inverse(m_camera->getScaleMatrix() * m_camera->getViewMatrix());
     glm::vec4 farWorld = ftw * glm::vec4(x, y, -1, 1);
 
-    glm::vec4 p = glm::inverse(m_camera->getViewMatrix()) * glm::vec4(0,0,0,1);
+    glm::vec4 p = glm::inverse(m_camera->getViewMatrix()) * glm::vec4(0, 0, 0, 1);
     glm::vec4 d = glm::normalize(farWorld - p);
 
 #ifdef TWOD
-    float t = -ZPOS-p.z / d.z;
+    float t = -ZPOS - p.z / d.z;
 #else
     float t = -p.z / d.z;
 #endif
@@ -243,39 +229,33 @@ float4 Renderer::raycast2XYPlane(float x, float y)
     return make_float4(point.x, point.y, point.z, point.w);
 }
 
-float3 Renderer::getDir(float x, float y)
-{
+float3 Renderer::getDir(float x, float y) {
     glm::mat4 ftw = glm::inverse(m_camera->getScaleMatrix() * m_camera->getViewMatrix());
     glm::vec4 farWorld = ftw * glm::vec4(x, y, -1, 1);
 
-    glm::vec4 p = glm::inverse(m_camera->getViewMatrix()) * glm::vec4(0,0,0,1);
+    glm::vec4 p = glm::inverse(m_camera->getViewMatrix()) * glm::vec4(0, 0, 0, 1);
     glm::vec4 d = glm::normalize(farWorld - p);
 
     return make_float3(d.x, d.y, d.z);
 }
 
-float3 Renderer::getEye()
-{
-    glm::vec4 p = glm::inverse(m_camera->getViewMatrix()) * glm::vec4(0,0,0,1);
+float3 Renderer::getEye() {
+    glm::vec4 p = glm::inverse(m_camera->getViewMatrix()) * glm::vec4(0, 0, 0, 1);
 
     return make_float3(p.x, p.y, p.z);
 }
 
-void Renderer::_initGL()
-{
+void Renderer::_initGL() {
     m_program = _compileProgram(":/shaders/default.vert", ":/shaders/default.frag");
 }
 
-void Renderer::mouseMoved(QMouseEvent *, float deltaX, float deltaY)
-{
+void Renderer::mouseMoved(QMouseEvent *, float deltaX, float deltaY) {
     m_camera->yaw(deltaX * 30.f);
     m_camera->pitch(deltaY * 30.f);
 }
 
-void Renderer::keyPressed(QKeyEvent *e)
-{
-    switch (e->key())
-    {
+void Renderer::keyPressed(QKeyEvent *e) {
+    switch (e->key()) {
     case Qt::Key_W:
         m_wsadeq |= 0b100000;
         break;
@@ -299,11 +279,8 @@ void Renderer::keyPressed(QKeyEvent *e)
     }
 }
 
-
-void Renderer::keyReleased(QKeyEvent *e)
-{
-    switch (e->key())
-    {
+void Renderer::keyReleased(QKeyEvent *e) {
+    switch (e->key()) {
     case Qt::Key_W:
         m_wsadeq &= 0b011111;
         break;
@@ -327,8 +304,7 @@ void Renderer::keyReleased(QKeyEvent *e)
     }
 }
 
-void Renderer::update(float secs)
-{
+void Renderer::update(float secs) {
     float forceAmt = 8.f;
     glm::vec3 force = glm::vec3();
     if (m_wsadeq & 0b100000)
@@ -357,15 +333,12 @@ void Renderer::update(float secs)
     m_camera->setCenter(eye);
 }
 
-
-void Renderer::resize(int w, int h)
-{
+void Renderer::resize(int w, int h) {
     m_camera->setAspectRatio(w * 1.f / h);
     m_screenSize = glm::ivec2(w, h);
 }
 
-void Renderer::_buildGrid(int3 minBounds, int3 maxBounds)
-{
+void Renderer::_buildGrid(int3 minBounds, int3 maxBounds) {
     int spacing = 4;
     int maxDistX = maxBounds.x - minBounds.x;
     int maxDistZ = maxBounds.z - minBounds.z;
@@ -380,116 +353,97 @@ void Renderer::_buildGrid(int3 minBounds, int3 maxBounds)
     numX = 2 * (numX + 1);
     numZ = 2 * (numZ + 1);
 
-    m_numGridVerts =  numX + numZ + 16; // 16 for wall lines
+    m_numGridVerts = numX + numZ + 16; // 16 for wall lines
     int size = (m_numGridVerts + 4) * 3;
     float *data = new float[size];
 
-    data[0] = maxBounds.x; data[1] = minBounds.y; data[2] = minBounds.z;
-    data[3] = minBounds.x; data[4] = minBounds.y; data[5] = minBounds.z;
-    data[6] = maxBounds.x; data[7] = minBounds.y; data[8] = maxBounds.z;
-    data[9] = minBounds.x; data[10] = minBounds.y; data[11] = maxBounds.z;
+    data[0] = maxBounds.x, data[1] = minBounds.y, data[2] = minBounds.z;
+    data[3] = minBounds.x, data[4] = minBounds.y, data[5] = minBounds.z;
+    data[6] = maxBounds.x, data[7] = minBounds.y, data[8] = maxBounds.z;
+    data[9] = minBounds.x, data[10] = minBounds.y, data[11] = maxBounds.z;
 
     int index = 12;
     int i;
     bool flop = true;
 
     // X
-    for (i = minBounds.x; i <= maxBounds.x; i+=spacing)
-    {
-        if (flop)
-        {
-            data[index++] = i; data[index++] = minBounds.y, data[index++] = minBounds.z;
-            data[index++] = i; data[index++] = minBounds.y, data[index++] = maxBounds.z;
-        }
-        else
-        {
-            data[index++] = i; data[index++] = minBounds.y, data[index++] = maxBounds.z;
-            data[index++] = i; data[index++] = minBounds.y, data[index++] = minBounds.z;
+    for (i = minBounds.x; i <= maxBounds.x; i += spacing) {
+        if (flop) {
+            data[index++] = i, data[index++] = minBounds.y, data[index++] = minBounds.z;
+            data[index++] = i, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+        } else {
+            data[index++] = i, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+            data[index++] = i, data[index++] = minBounds.y, data[index++] = minBounds.z;
         }
         flop = !flop;
     }
-    if (i-spacing != maxBounds.x)
-    {
-        if (flop)
-        {
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = minBounds.z;
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = maxBounds.z;
-        }
-        else
-        {
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = maxBounds.z;
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = minBounds.z;
+    if (i - spacing != maxBounds.x) {
+        if (flop) {
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = minBounds.z;
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+        } else {
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = minBounds.z;
         }
         flop = !flop;
     }
-
 
     // Z
     flop = true;
-    for (i = minBounds.z; i <= maxBounds.z; i+=spacing)
-    {
-        if (flop)
-        {
-            data[index++] = minBounds.x; data[index++] = minBounds.y, data[index++] = i;
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = i;
-        }
-        else
-        {
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = i;
-            data[index++] = minBounds.x; data[index++] = minBounds.y, data[index++] = i;
+    for (i = minBounds.z; i <= maxBounds.z; i += spacing) {
+        if (flop) {
+            data[index++] = minBounds.x, data[index++] = minBounds.y, data[index++] = i;
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = i;
+        } else {
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = i;
+            data[index++] = minBounds.x, data[index++] = minBounds.y, data[index++] = i;
         }
         flop = !flop;
     }
-    if (i-spacing != maxBounds.z)
-    {
-        if (flop)
-        {
-            data[index++] = minBounds.x; data[index++] = minBounds.y, data[index++] = maxBounds.z;
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = maxBounds.z;
-        }
-        else
-        {
-            data[index++] = maxBounds.x; data[index++] = minBounds.y, data[index++] = maxBounds.z;
-            data[index++] = minBounds.x; data[index++] = minBounds.y, data[index++] = maxBounds.z;
+    if (i - spacing != maxBounds.z) {
+        if (flop) {
+            data[index++] = minBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+        } else {
+            data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+            data[index++] = minBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
         }
         flop = !flop;
     }
-
 
     // Walls
-    data[index++] = minBounds.x; data[index++] = minBounds.y; data[index++] = minBounds.z;
-    data[index++] = minBounds.x; data[index++] = maxBounds.y; data[index++] = minBounds.z;
-    data[index++] = minBounds.x; data[index++] = maxBounds.y; data[index++] = minBounds.z;
+    data[index++] = minBounds.x, data[index++] = minBounds.y, data[index++] = minBounds.z;
+    data[index++] = minBounds.x, data[index++] = maxBounds.y, data[index++] = minBounds.z;
+    data[index++] = minBounds.x, data[index++] = maxBounds.y, data[index++] = minBounds.z;
 
-    data[index++] = maxBounds.x; data[index++] = maxBounds.y; data[index++] = minBounds.z;
-    data[index++] = maxBounds.x; data[index++] = minBounds.y; data[index++] = minBounds.z;
-    data[index++] = maxBounds.x; data[index++] = maxBounds.y; data[index++] = minBounds.z;
-    data[index++] = maxBounds.x; data[index++] = maxBounds.y; data[index++] = minBounds.z;
+    data[index++] = maxBounds.x, data[index++] = maxBounds.y, data[index++] = minBounds.z;
+    data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = minBounds.z;
+    data[index++] = maxBounds.x, data[index++] = maxBounds.y, data[index++] = minBounds.z;
+    data[index++] = maxBounds.x, data[index++] = maxBounds.y, data[index++] = minBounds.z;
 
-    data[index++] = maxBounds.x; data[index++] = maxBounds.y; data[index++] = maxBounds.z;
-    data[index++] = maxBounds.x; data[index++] = minBounds.y; data[index++] = maxBounds.z;
-    data[index++] = maxBounds.x; data[index++] = maxBounds.y; data[index++] = maxBounds.z;
-    data[index++] = maxBounds.x; data[index++] = maxBounds.y; data[index++] = maxBounds.z;
+    data[index++] = maxBounds.x, data[index++] = maxBounds.y, data[index++] = maxBounds.z;
+    data[index++] = maxBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+    data[index++] = maxBounds.x, data[index++] = maxBounds.y, data[index++] = maxBounds.z;
+    data[index++] = maxBounds.x, data[index++] = maxBounds.y, data[index++] = maxBounds.z;
 
-    data[index++] = minBounds.x; data[index++] = maxBounds.y; data[index++] = maxBounds.z;
-    data[index++] = minBounds.x; data[index++] = minBounds.y; data[index++] = maxBounds.z;
-    data[index++] = minBounds.x; data[index++] = maxBounds.y; data[index++] = maxBounds.z;
-    data[index++] = minBounds.x; data[index++] = maxBounds.y; data[index++] = maxBounds.z;
+    data[index++] = minBounds.x, data[index++] = maxBounds.y, data[index++] = maxBounds.z;
+    data[index++] = minBounds.x, data[index++] = minBounds.y, data[index++] = maxBounds.z;
+    data[index++] = minBounds.x, data[index++] = maxBounds.y, data[index++] = maxBounds.z;
+    data[index++] = minBounds.x, data[index++] = maxBounds.y, data[index++] = maxBounds.z;
 
-    data[index++] = minBounds.x; data[index++] = maxBounds.y; data[index++] = minBounds.z;
+    data[index++] = minBounds.x, data[index++] = maxBounds.y, data[index++] = minBounds.z;
 
-//    cout << index << ", " << size << endl;
+    //    cout << index << ", " << size << endl;
 
-//    m_numGridVerts = 0;
-//    size = 12;
+    //    m_numGridVerts = 0;
+    //    size = 12;
 
     _setGridBuffer(data, size * sizeof(float));
 
-    delete [] data;
+    delete[] data;
 }
 
-void Renderer::_setGridBuffer(float *data, int memsize)
-{
+void Renderer::_setGridBuffer(float *data, int memsize) {
     if (m_vboGrid)
         glDeleteBuffers(1, &m_vboGrid);
     if (m_vaoGrid)
@@ -514,11 +468,10 @@ void Renderer::_setGridBuffer(float *data, int memsize)
         GL_FLOAT,            // Type
         GL_FALSE,            // Normalized
         sizeof(GLfloat) * 3, // Stride
-        (void*) 0            // Array buffer offset
+        (void *)0            // Array buffer offset
     );
 
     // Unbind buffers.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
-

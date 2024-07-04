@@ -2,10 +2,8 @@
 #include "ui_mainwindow.h"
 #include "view.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
-{
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
+                                          ui(new Ui::MainWindow) {
     QGLFormat qglFormat;
     qglFormat.setVersion(3, 2);
     qglFormat.setProfile(QGLFormat::CoreProfile);
@@ -20,14 +18,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(view, SIGNAL(changeTitle(const QString)), this, SLOT(changeTitle(const QString)));
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-
-void MainWindow::changeTitle(const QString &title)
-{
+void MainWindow::changeTitle(const QString &title) {
     this->setWindowTitle(title);
 }
-

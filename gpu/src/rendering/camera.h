@@ -3,8 +3,7 @@
 
 #include <glm.hpp>
 
-class Camera
-{
+class Camera {
 public:
     Camera();
     virtual ~Camera();
@@ -47,7 +46,6 @@ protected:
     float m_near, m_far, m_heightDegrees, m_aspectRatio;
 
     float m_thirdDist;
-
 };
 
 #endif // CAMERA_H

@@ -21,3 +21,4 @@ particles_cuda.app
 #############
 Makefile
 
+build-particles-Desktop-*

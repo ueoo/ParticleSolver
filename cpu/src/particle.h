@@ -18,12 +18,11 @@ struct Body;
 struct SDFData;
 
 // Individual particle representation
-struct Particle
-{
-    glm::dvec2 p, ep, v, f; // position, guess position, and velocity
+struct Particle {
+    glm::dvec2 p, ep, v, f;                       // position, guess position, and velocity
     double imass, tmass, sFriction, kFriction, t; // inverse mass, temporary height-scaled mass, coeffs of friction
-    int bod; // body (if any) this particle belongs to, for disabling collisions
-    Phase ph; // phase of this particle
+    int bod;                                      // body (if any) this particle belongs to, for disabling collisions
+    Phase ph;                                     // phase of this particle
 
     Particle()
         : p(glm::dvec2()), v(glm::dvec2()), ph(NUM_PHASES) { init(0); }
@@ -59,7 +58,8 @@ struct Particle
 
     inline void confirmGuess() {
         if (glm::length(ep - p) < EPSILON) {
-            v = glm::dvec2(0,0); return;
+            v = glm::dvec2(0, 0);
+            return;
         }
         p = ep;
     }
@@ -102,8 +102,7 @@ enum ConstraintGroup {
 };
 
 // Abstract superclass of all constraint types
-class Constraint
-{
+class Constraint {
 public:
     Constraint() : stiffness(1) {}
     virtual ~Constraint() {}
@@ -123,14 +122,13 @@ protected:
 };
 
 // A single rigid body
-struct Body
-{
+struct Body {
     virtual ~Body() { delete shape; }
-    QList<int> particles; // index into global particles list
+    QList<int> particles;      // index into global particles list
     QHash<int, glm::dvec2> rs; // map from global particles index to r vector
-    QHash<int, SDFData> sdf; // map from global particles index to SDF data
+    QHash<int, SDFData> sdf;   // map from global particles index to SDF data
     Constraint *shape;
-    glm::dvec2 center; // center of mass
+    glm::dvec2 center;   // center of mass
     double imass, angle; // total inverse mass
 
     void updateCOM(QList<Particle *> *estimates, bool useEstimates = true);
