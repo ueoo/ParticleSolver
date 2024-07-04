@@ -22,8 +22,7 @@
 #include "particle.h"
 #include <QSet>
 
-class GasConstraint : public Constraint
-{
+class GasConstraint : public Constraint {
 public:
     GasConstraint(double density, QList<int> *particles, bool open);
     virtual ~GasConstraint();

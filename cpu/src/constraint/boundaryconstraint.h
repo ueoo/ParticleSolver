@@ -4,8 +4,7 @@
 #include "particle.h"
 
 // Collision with the boundaries of the world
-class BoundaryConstraint : public Constraint
-{
+class BoundaryConstraint : public Constraint {
 public:
     BoundaryConstraint(int index, double val, bool xBoundary, bool greater, bool st = false);
     virtual ~BoundaryConstraint();
@@ -20,7 +19,7 @@ public:
 private:
     int idx;
     double value;
-    bool isX, isGreaterThan, stabile;
+    bool isX, isGreaterThan, stable;
 };
 
 #endif // BOUNDARYCONSTRAINT_H

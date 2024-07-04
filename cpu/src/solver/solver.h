@@ -22,7 +22,7 @@ public:
 
     void setupM(QList<Particle *> *particles, bool contact = false);
     void setupSizes(int numParts, QList<Constraint *> *constraints);
-    void solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *constraints, bool stabile = false);
+    void solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *constraints, bool stable = false);
 };
 
 #endif // SOLVER_H

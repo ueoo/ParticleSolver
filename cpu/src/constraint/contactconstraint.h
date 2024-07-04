@@ -4,8 +4,7 @@
 #include "particle.h"
 
 // Contact between two particles where AT LEAST ONE is not a solid
-class ContactConstraint : public Constraint
-{
+class ContactConstraint : public Constraint {
 public:
     ContactConstraint(int first, int second, bool st = false);
     virtual ~ContactConstraint();
@@ -19,7 +18,7 @@ public:
 
 private:
     int i1, i2;
-    bool stabile;
+    bool stable;
 };
 
 #endif // CONTACTCONSTRAINT_H

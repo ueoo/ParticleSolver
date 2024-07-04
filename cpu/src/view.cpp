@@ -80,10 +80,10 @@ void View::mousePressEvent(QMouseEvent *event) {
 void View::mouseMoveEvent(QMouseEvent *event) {
     // This starter code implements mouse capture, which gives the change in
     // mouse position since the last mouse movement. The mouse needs to be
-    // recentered after every movement because it might otherwise run into
+    // re-centered after every movement because it might otherwise run into
     // the edge of the screen, which would stop the user from moving further
     // in that direction. Note that it is important to check that deltaX and
-    // deltaY are not zero before recentering the mouse, otherwise there will
+    // deltaY are not zero before re-centering the mouse, otherwise there will
     // be an infinite loop of mouse move events.
     int deltaX = event->x() - width() / 2;
     int deltaY = event->y() - height() / 2;

@@ -3,8 +3,7 @@
 
 #include "particle.h"
 
-class TotalShapeConstraint : public Constraint
-{
+class TotalShapeConstraint : public Constraint {
 public:
     TotalShapeConstraint(Body *bod, double stiff = 1.0);
     virtual ~TotalShapeConstraint();

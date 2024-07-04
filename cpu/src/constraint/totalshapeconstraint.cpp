@@ -1,18 +1,14 @@
 #include "totalshapeconstraint.h"
 
 TotalShapeConstraint::TotalShapeConstraint(Body *bod, double stiff)
-    : Constraint(), body(bod)
-{
+    : Constraint(), body(bod) {
     stiffness = stiff;
 }
 
-TotalShapeConstraint::~TotalShapeConstraint()
-{
-
+TotalShapeConstraint::~TotalShapeConstraint() {
 }
 
-void TotalShapeConstraint::project(QList<Particle *> *estimates, int *counts)
-{
+void TotalShapeConstraint::project(QList<Particle *> *estimates, int *counts) {
     body->updateCOM(estimates);
 
     // implemented using http://labs.byhook.com/2010/06/29/particle-based-rigid-bodies-using-shape-matching/
@@ -23,9 +19,8 @@ void TotalShapeConstraint::project(QList<Particle *> *estimates, int *counts)
     }
 }
 
-void TotalShapeConstraint::draw(QList<Particle *> *particles)
-{
-    glColor3f(0,1,0);
+void TotalShapeConstraint::draw(QList<Particle *> *particles) {
+    glColor3f(0, 1, 0);
     glBegin(GL_LINES);
 
     for (int i = 0; i < body->particles.size(); i++) {
@@ -49,36 +44,32 @@ void TotalShapeConstraint::draw(QList<Particle *> *particles)
     glEnd();
 }
 
-double TotalShapeConstraint::evaluate(QList<Particle *> *estimates)
-{
-    (void) estimates;
+double TotalShapeConstraint::evaluate(QList<Particle *> *estimates) {
+    (void)estimates;
     return 0;
 }
 
-glm::dvec2 TotalShapeConstraint::gradient(QList<Particle *> *estimates, int respect)
-{
-//    if (body->rs.contains(respect)) {
-//        Particle *p = estimates->at(respect);
-//        glm::dvec2 out = guess(respect) - p->ep;
-//        if (out == glm::dvec2()) {
-//            return glm::dvec2(0,0);
-//        }
-//        return -glm::normalize(out);
-//    }
-    (void) estimates;
-    (void) respect;
+glm::dvec2 TotalShapeConstraint::gradient(QList<Particle *> *estimates, int respect) {
+    //    if (body->rs.contains(respect)) {
+    //        Particle *p = estimates->at(respect);
+    //        glm::dvec2 out = guess(respect) - p->ep;
+    //        if (out == glm::dvec2()) {
+    //            return glm::dvec2(0,0);
+    //        }
+    //        return -glm::normalize(out);
+    //    }
+    (void)estimates;
+    (void)respect;
     return glm::dvec2();
 }
 
-void TotalShapeConstraint::updateCounts(int *counts)
-{
+void TotalShapeConstraint::updateCounts(int *counts) {
     for (int i = 0; i < body->particles.size(); i++) {
         counts[body->particles[i]]++;
     }
 }
 
-glm::dvec2 TotalShapeConstraint::guess(int idx)
-{
+glm::dvec2 TotalShapeConstraint::guess(int idx) {
     double c = cos(body->angle), s = sin(body->angle);
 
     glm::dvec2 q = body->rs[idx],

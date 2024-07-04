@@ -1,8 +1,7 @@
 #ifndef SMOKEPARTICLE_H
 #define SMOKEPARTICLE_H
 
-class SmokeParticle
-{
+class SmokeParticle {
 public:
     SmokeParticle();
 };

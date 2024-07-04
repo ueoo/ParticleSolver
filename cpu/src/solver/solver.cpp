@@ -68,7 +68,7 @@ void Solver::setupSizes(int numParts, QList<Constraint *> *constraints) {
     }
 }
 
-void Solver::solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *constraints, bool stabile) {
+void Solver::solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *constraints, bool stable) {
     if (constraints->size() == 0) {
         return;
     }
@@ -119,7 +119,7 @@ void Solver::solveAndUpdate(QList<Particle *> *particles, QList<Constraint *> *c
         p->ep.x += (fabs(dx) > EPSILON ? dx : 0);
         p->ep.y += (fabs(dy) > EPSILON ? dy : 0);
 
-        if (stabile) {
+        if (stable) {
             p->p.x += (fabs(dx) > EPSILON ? dx : 0);
             p->p.y += (fabs(dy) > EPSILON ? dy : 0);
         }

@@ -1,22 +1,19 @@
 #include "rigidcontactconstraint.h"
 
 RigidContactConstraint::RigidContactConstraint(int first, int second, QList<Body *> *bodies, bool st)
-    : Constraint(), d(0.0), i1(first), i2(second), stabile(st), bods(bodies)
-{
-
+    : Constraint(), d(0.0), i1(first), i2(second), stable(st), bods(bodies) {
 }
 
-RigidContactConstraint::~RigidContactConstraint()
-{
+RigidContactConstraint::~RigidContactConstraint() {
 }
 
-bool RigidContactConstraint::initBoundary(Particle *p1, Particle *p2)
-{
-    glm::dvec2 x12 = p1->getP(stabile) - p2->getP(stabile);
+bool RigidContactConstraint::initBoundary(Particle *p1, Particle *p2) {
+    glm::dvec2 x12 = p1->getP(stable) - p2->getP(stable);
     double len = glm::length(x12);
     d = PARTICLE_DIAM - len;
-    if (d < EPSILON) return true;
-    x12 = len > EPSILON ? x12 / len : glm::dvec2(0,1);
+    if (d < EPSILON)
+        return true;
+    x12 = len > EPSILON ? x12 / len : glm::dvec2(0, 1);
     double dp = glm::dot(x12, n);
     if (dp < 0) {
         n = x12 - 2.0 * dp * n;
@@ -26,16 +23,16 @@ bool RigidContactConstraint::initBoundary(Particle *p1, Particle *p2)
     return false;
 }
 
-void RigidContactConstraint::project(QList<Particle *> *estimates, int *counts)
-{
+void RigidContactConstraint::project(QList<Particle *> *estimates, int *counts) {
     Particle *p1 = estimates->at(i1), *p2 = estimates->at(i2);
     SDFData dat1 = p1->getSDFData(bods, i1), dat2 = p2->getSDFData(bods, i2);
 
     if (dat1.distance < 0 || dat2.distance < 0) {
-        glm::dvec2 x12 = p2->getP(stabile) - p1->getP(stabile);
+        glm::dvec2 x12 = p2->getP(stable) - p1->getP(stable);
         double len = glm::length(x12);
         d = PARTICLE_DIAM - len;
-        if (d < EPSILON) return;
+        if (d < EPSILON)
+            return;
         n = x12 / len;
     } else {
         if (dat1.distance < dat2.distance) {
@@ -55,10 +52,10 @@ void RigidContactConstraint::project(QList<Particle *> *estimates, int *counts)
 
     double wSum = p1->tmass + p2->tmass;
     glm::dvec2 dp = (1.0 / wSum) * d * n,
-              dp1 = -p1->tmass * dp  / (double)counts[i1],
-              dp2 = p2->tmass * dp / (double)counts[i2];
+               dp1 = -p1->tmass * dp / (double)counts[i1],
+               dp2 = p2->tmass * dp / (double)counts[i2];
 
-    if (!stabile) {
+    if (!stable) {
         p1->ep += dp1;
         p2->ep += dp2;
     } else {
@@ -75,10 +72,10 @@ void RigidContactConstraint::project(QList<Particle *> *estimates, int *counts)
         return;
     }
     double sFric = sqrt(p1->sFriction * p2->sFriction),
-            kFric = sqrt(p1->kFriction * p2->kFriction);
+           kFric = sqrt(p1->kFriction * p2->kFriction);
 
     if (ldpt < sFric * d) {
-        if (stabile) {
+        if (stable) {
             p1->p -= dpt * p1->tmass / wSum;
             p2->p += dpt * p2->tmass / wSum;
         }
@@ -86,7 +83,7 @@ void RigidContactConstraint::project(QList<Particle *> *estimates, int *counts)
         p2->ep += dpt * p2->tmass / wSum;
     } else {
         glm::dvec2 delta = dpt * min(kFric * d / ldpt, 1.);
-        if (stabile) {
+        if (stable) {
             p1->p -= delta * p1->tmass / wSum;
             p2->p += delta * p2->tmass / wSum;
         }
@@ -95,21 +92,18 @@ void RigidContactConstraint::project(QList<Particle *> *estimates, int *counts)
     }
 }
 
-void RigidContactConstraint::draw(QList<Particle *> *particles)
-{
-
+void RigidContactConstraint::draw(QList<Particle *> *particles) {
 }
 
-double RigidContactConstraint::evaluate(QList<Particle *> *estimates)
-{
+double RigidContactConstraint::evaluate(QList<Particle *> *estimates) {
     Particle *p1 = estimates->at(i1), *p2 = estimates->at(i2);
     SDFData dat1 = p1->getSDFData(bods, i1), dat2 = p2->getSDFData(bods, i2);
 
     if (dat1.distance < 0 || dat2.distance < 0) {
-        glm::dvec2 x12 = p2->getP(stabile) - p1->getP(stabile);
+        glm::dvec2 x12 = p2->getP(stable) - p1->getP(stable);
         double len = glm::length(x12);
         d = PARTICLE_DIAM - len;
-        n = len > EPSILON ? -x12 / len : glm::dvec2(0,1);
+        n = len > EPSILON ? -x12 / len : glm::dvec2(0, 1);
     } else {
         if (dat1.distance < dat2.distance) {
             d = dat1.distance;
@@ -127,8 +121,7 @@ double RigidContactConstraint::evaluate(QList<Particle *> *estimates)
     return d;
 }
 
-glm::dvec2 RigidContactConstraint::gradient(QList<Particle *> *estimates, int respect)
-{
+glm::dvec2 RigidContactConstraint::gradient(QList<Particle *> *estimates, int respect) {
     if (respect == i1) {
         return -n;
     }
@@ -140,8 +133,7 @@ glm::dvec2 RigidContactConstraint::gradient(QList<Particle *> *estimates, int re
     return glm::dvec2();
 }
 
-void RigidContactConstraint::updateCounts(int *counts)
-{
+void RigidContactConstraint::updateCounts(int *counts) {
     counts[i1]++;
     counts[i2]++;
 }

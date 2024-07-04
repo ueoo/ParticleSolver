@@ -1,8 +1,7 @@
 #include "totalfluidconstraint.h"
 
 TotalFluidConstraint::TotalFluidConstraint(double density, QList<int> *particles)
-    : Constraint(), p0(density)
-{
+    : Constraint(), p0(density) {
     neighbors = new QList<int>[particles->size()];
     deltas = new glm::dvec2[particles->size()];
 
@@ -13,8 +12,7 @@ TotalFluidConstraint::TotalFluidConstraint(double density, QList<int> *particles
     }
 }
 
-TotalFluidConstraint::~TotalFluidConstraint()
-{
+TotalFluidConstraint::~TotalFluidConstraint() {
     delete[] neighbors;
 }
 
@@ -30,16 +28,15 @@ void TotalFluidConstraint::addParticle(int index) {
 void TotalFluidConstraint::removeParticle(int index) {
     delete[] neighbors;
     delete[] deltas;
-//    if(ps.contains(index)) {
-        numParticles--;
-        neighbors = new QList<int>[numParticles];
-        deltas = new glm::dvec2[numParticles];
-        ps.removeAt(index);
-//    }
+    // if(ps.contains(index)) {
+    numParticles--;
+    neighbors = new QList<int>[numParticles];
+    deltas = new glm::dvec2[numParticles];
+    ps.removeAt(index);
+    // }
 }
 
-void TotalFluidConstraint::project(QList<Particle *> *estimates, int *counts)
-{
+void TotalFluidConstraint::project(QList<Particle *> *estimates, int *counts) {
     // Find neighboring particles and estimate pi for each particle
     lambdas.clear();
     for (int k = 0; k < ps.size(); k++) {
@@ -56,7 +53,8 @@ void TotalFluidConstraint::project(QList<Particle *> *estimates, int *counts)
                 Particle *p_j = estimates->at(j);
 
                 // Ignore fixed particles
-                if (p_j->imass == 0) continue;
+                if (p_j->imass == 0)
+                    continue;
                 glm::dvec2 r = p_i->ep - p_j->ep;
                 double rlen2 = glm::dot(r, r);
                 if (rlen2 < H2) {
@@ -73,7 +71,7 @@ void TotalFluidConstraint::project(QList<Particle *> *estimates, int *counts)
                     denom += glm::dot(gr, gr);
                 }
 
-            // If it is, cut to the chase
+                // If it is, cut to the chase
             } else {
                 neighbors[k].append(j);
                 pi += poly6(0) / p_i->imass;
@@ -84,7 +82,7 @@ void TotalFluidConstraint::project(QList<Particle *> *estimates, int *counts)
         denom += glm::dot(gr, gr);
 
         // Compute the gamma value
-//        cout << i << " estimated " << pi << endl;
+        // cout << i << " estimated " << pi << endl;
         double lambda = -((pi / p0) - 1.) / (denom + RELAXATION);
         lambdas[i] = lambda;
     }
@@ -97,7 +95,8 @@ void TotalFluidConstraint::project(QList<Particle *> *estimates, int *counts)
 
         for (int x = 0; x < neighbors[k].size(); x++) {
             int j = neighbors[k][x];
-            if (i == j) continue;
+            if (i == j)
+                continue;
             Particle *p_j = estimates->at(j);
             glm::dvec2 r = p_i->ep - p_j->ep;
             double rlen = glm::length(r);
@@ -111,33 +110,31 @@ void TotalFluidConstraint::project(QList<Particle *> *estimates, int *counts)
     for (int k = 0; k < ps.size(); k++) {
         int i = ps[k];
         Particle *p_i = estimates->at(i);
-        p_i->ep += deltas[k] / ((double) neighbors[k].size() + counts[i]);
+        p_i->ep += deltas[k] / ((double)neighbors[k].size() + counts[i]);
     }
 }
 
-void TotalFluidConstraint::draw(QList<Particle *> *particles)
-{
-
+void TotalFluidConstraint::draw(QList<Particle *> *particles) {
 }
 
-double TotalFluidConstraint::poly6(double r2)
-{
-    if(r2 >= H2) return 0;
+double TotalFluidConstraint::poly6(double r2) {
+    if (r2 >= H2)
+        return 0;
     double term2 = (H2 - r2);
     return (315. / (64. * M_PI * H9)) * (term2 * term2 * term2);
-//    return (H-r) / (H*H);
+    // return (H-r) / (H*H);
 }
 
-glm::dvec2 TotalFluidConstraint::spikyGrad(const glm::dvec2 &r, double rlen2)
-{
-    if(rlen2 >= H) return glm::dvec2();
-    if(rlen2 == 0) return glm::dvec2();
+glm::dvec2 TotalFluidConstraint::spikyGrad(const glm::dvec2 &r, double rlen2) {
+    if (rlen2 >= H)
+        return glm::dvec2();
+    if (rlen2 == 0)
+        return glm::dvec2();
     return -glm::normalize(r) * (45. / (M_PI * H6)) * (H - rlen2) * (H - rlen2);
-//    return -r / (H*H*rlen);
+    // return -r / (H*H*rlen);
 }
 
-glm::dvec2 TotalFluidConstraint::grad(QList<Particle *> *estimates, int k, int j)
-{
+glm::dvec2 TotalFluidConstraint::grad(QList<Particle *> *estimates, int k, int j) {
     int i = ps[k];
     Particle *p_i = estimates->at(i), *p_j = estimates->at(j);
     glm::dvec2 r = p_i->ep - p_j->ep;
@@ -157,18 +154,15 @@ glm::dvec2 TotalFluidConstraint::grad(QList<Particle *> *estimates, int k, int j
     return out / (p0);
 }
 
-double TotalFluidConstraint::evaluate(QList<Particle *> *estimates)
-{
+double TotalFluidConstraint::evaluate(QList<Particle *> *estimates) {
     std::cout << "You shouldn't be calling evaluate on fluids" << std::endl;
     exit(1);
 }
 
-glm::dvec2 TotalFluidConstraint::gradient(QList<Particle *> *estimates, int respect)
-{
+glm::dvec2 TotalFluidConstraint::gradient(QList<Particle *> *estimates, int respect) {
     std::cout << "You shouldn't be calling gradient on fluids" << std::endl;
     exit(1);
 }
 
-void TotalFluidConstraint::updateCounts(int *counts)
-{
+void TotalFluidConstraint::updateCounts(int *counts) {
 }

@@ -4,8 +4,7 @@
 #include "particle.h"
 
 // Two particles must be exactly a certain distance away
-class DistanceConstraint : public Constraint
-{
+class DistanceConstraint : public Constraint {
 public:
     DistanceConstraint(double distance, int first, int second, bool st = false);
     DistanceConstraint(int first, int second, QList<Particle *> *particles);
@@ -21,7 +20,7 @@ public:
 private:
     double d;
     int i1, i2;
-    bool stabile;
+    bool stable;
 };
 
 #endif // DISTANCECONSTRAINT_H

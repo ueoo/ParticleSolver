@@ -1,18 +1,13 @@
 #include "boundaryconstraint.h"
 
 BoundaryConstraint::BoundaryConstraint(int index, double val, bool xBoundary, bool greater, bool st)
-    : Constraint(), idx(index), value(val), isX(xBoundary), isGreaterThan(greater), stabile(st)
-{
-
+    : Constraint(), idx(index), value(val), isX(xBoundary), isGreaterThan(greater), stable(st) {
 }
 
-BoundaryConstraint::~BoundaryConstraint()
-{
-
+BoundaryConstraint::~BoundaryConstraint() {
 }
 
-void BoundaryConstraint::project(QList<Particle *> *estimates, int *counts)
-{
+void BoundaryConstraint::project(QList<Particle *> *estimates, int *counts) {
     Particle *p = estimates->at(idx);
 
     // Add a little random jitter for fluids and gases so particles do not become trapped on boundaries
@@ -29,10 +24,10 @@ void BoundaryConstraint::project(QList<Particle *> *estimates, int *counts)
                 return;
             }
             p->ep.x = value + d;
-            if (stabile) {
+            if (stable) {
                 p->p.x = value + d;
             }
-            n = glm::dvec2(1,0);
+            n = glm::dvec2(1, 0);
         } else {
 
             // Quit if no longer valid
@@ -40,10 +35,10 @@ void BoundaryConstraint::project(QList<Particle *> *estimates, int *counts)
                 return;
             }
             p->ep.y = value + d;
-            if (stabile) {
+            if (stable) {
                 p->p.y = value + d;
             }
-            n = glm::dvec2(0,1);
+            n = glm::dvec2(0, 1);
         }
     } else {
         if (isX) {
@@ -53,10 +48,10 @@ void BoundaryConstraint::project(QList<Particle *> *estimates, int *counts)
                 return;
             }
             p->ep.x = value - d;
-            if (stabile) {
+            if (stable) {
                 p->p.x = value - d;
             }
-            n = glm::dvec2(-1,0);
+            n = glm::dvec2(-1, 0);
         } else {
 
             // Quit if no longer valid
@@ -64,14 +59,14 @@ void BoundaryConstraint::project(QList<Particle *> *estimates, int *counts)
                 return;
             }
             p->ep.y = value - d;
-            if (stabile) {
+            if (stable) {
                 p->p.y = value - d;
             }
-            n = glm::dvec2(0,-1);
+            n = glm::dvec2(0, -1);
         }
     }
 
-    if (stabile) {
+    if (stable) {
         return;
     }
 
@@ -88,54 +83,50 @@ void BoundaryConstraint::project(QList<Particle *> *estimates, int *counts)
     if (ldpt < sqrt(p->sFriction) * d) {
         p->ep -= dpt;
     } else {
-        p->ep -= dpt * min(sqrt(p->kFriction )* d / ldpt, 1.);
+        p->ep -= dpt * min(sqrt(p->kFriction) * d / ldpt, 1.);
     }
 }
 
-void BoundaryConstraint::draw(QList<Particle *> *particles)
-{
+void BoundaryConstraint::draw(QList<Particle *> *particles) {
 }
 
-double BoundaryConstraint::evaluate(QList<Particle *> *estimates)
-{
+double BoundaryConstraint::evaluate(QList<Particle *> *estimates) {
     Particle *p = estimates->at(idx);
     if (isGreaterThan) {
         if (isX) {
-            return (value + PARTICLE_RAD) - p->getP(stabile).x;
+            return (value + PARTICLE_RAD) - p->getP(stable).x;
         } else {
-            return (value + PARTICLE_RAD) - p->getP(stabile).y;
+            return (value + PARTICLE_RAD) - p->getP(stable).y;
         }
     } else {
         if (isX) {
-            return p->getP(stabile).x - (value - PARTICLE_RAD);
+            return p->getP(stable).x - (value - PARTICLE_RAD);
         } else {
-            return p->getP(stabile).y - (value - PARTICLE_RAD);
+            return p->getP(stable).y - (value - PARTICLE_RAD);
         }
     }
 }
 
-glm::dvec2 BoundaryConstraint::gradient(QList<Particle *> *estimates, int respect)
-{
+glm::dvec2 BoundaryConstraint::gradient(QList<Particle *> *estimates, int respect) {
     if (respect != idx) {
         return glm::dvec2();
     }
 
     if (isGreaterThan) {
         if (isX) {
-            return glm::dvec2(-1,0);
+            return glm::dvec2(-1, 0);
         } else {
-            return glm::dvec2(0,-1);
+            return glm::dvec2(0, -1);
         }
     } else {
         if (isX) {
-            return glm::dvec2(1,0);
+            return glm::dvec2(1, 0);
         } else {
-            return glm::dvec2(0,1);
+            return glm::dvec2(0, 1);
         }
     }
 }
 
-void BoundaryConstraint::updateCounts(int *counts)
-{
+void BoundaryConstraint::updateCounts(int *counts) {
     counts[idx]++;
 }

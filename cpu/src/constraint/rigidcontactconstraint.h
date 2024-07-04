@@ -3,8 +3,7 @@
 
 #include "particle.h"
 
-class RigidContactConstraint : public Constraint
-{
+class RigidContactConstraint : public Constraint {
 public:
     RigidContactConstraint(int first, int second, QList<Body *> *bodies, bool st = false);
     virtual ~RigidContactConstraint();
@@ -23,7 +22,7 @@ private:
     glm::dvec2 n;
     double d;
     int i1, i2;
-    bool stabile;
+    bool stable;
 };
 
 #endif // RIGIDCONTACTCONSTRAINT_H

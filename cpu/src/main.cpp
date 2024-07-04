@@ -11,7 +11,9 @@ int main(int argc, char *argv[]) {
 
     w.setFixedSize(800, 800);
     w.show();
-    //    w.setWindowState(w.windowState() | Qt::WindowFullScreen); // Comment out this line to have a windowed 800x600 game on startup.
+
+    // Comment out this line to have a windowed 800x600 game on startup.
+    // w.setWindowState(w.windowState() | Qt::WindowFullScreen);
 
     return a.exec();
 }

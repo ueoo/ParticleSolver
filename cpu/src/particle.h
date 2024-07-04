@@ -73,7 +73,7 @@ struct Particle {
     }
 
     // Used for stabilization-related constraints
-    inline glm::dvec2 getP(bool stabile) { return stabile ? p : ep; }
+    inline glm::dvec2 getP(bool stable) { return stable ? p : ep; }
 
     SDFData getSDFData(QList<Body *> *bodies, int idx);
 };

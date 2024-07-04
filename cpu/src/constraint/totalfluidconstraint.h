@@ -1,17 +1,17 @@
 #ifndef TOTALFLUIDCONSTRAINT_H
 #define TOTALFLUIDCONSTRAINT_H
 
-//#define H 3.5
-//#define H6 1838.265625
-//#define H9 78815.6386719
+// #define H 3.5
+// #define H6 1838.265625
+// #define H9 78815.6386719
 
-//#define H 5.
-//#define H6 15625.
-//#define H9 1953125.
+// #define H 5.
+// #define H6 15625.
+// #define H9 1953125.
 
-//#define H 4.
-//#define H6 4096.
-//#define H9 262144.
+// #define H 4.
+// #define H6 4096.
+// #define H9 262144.
 
 #define H 2.
 #define H2 4.
@@ -31,8 +31,7 @@
 
 #include "particle.h"
 
-class TotalFluidConstraint : public Constraint
-{
+class TotalFluidConstraint : public Constraint {
 public:
     TotalFluidConstraint(double density, QList<int> *particles);
     virtual ~TotalFluidConstraint();

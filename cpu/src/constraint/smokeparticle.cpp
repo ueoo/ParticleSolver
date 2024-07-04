@@ -1,5 +1,4 @@
 #include "smokeparticle.h"
 
-SmokeParticle::SmokeParticle()
-{
+SmokeParticle::SmokeParticle() {
 }
