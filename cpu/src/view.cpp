@@ -19,7 +19,7 @@ View::View(QWidget *parent) : QGLWidget(parent) {
     scale = 10;
     tickTime = 0.0;
     timestepMode = true;
-    current = FLUID_TEST;
+    current = FRICTION_TEST;
 }
 
 View::~View() {
@@ -143,6 +143,9 @@ void View::keyPressEvent(QKeyEvent *event) {
         sim.init(current);
     } else if (event->key() == Qt::Key_8) {
         current = GAS_ROPE_TEST;
+        sim.init(current);
+    } else if (event->key() == Qt::Key_G) {
+        current = GAS_TEST;
         sim.init(current);
     } else if (event->key() == Qt::Key_9) {
         current = FRICTION_TEST;

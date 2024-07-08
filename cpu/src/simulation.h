@@ -31,6 +31,7 @@ enum SimulationType {
     ROPE_TEST,
     FLUID_TEST,
     FLUID_SOLID_TEST,
+    GAS_TEST,
     GAS_ROPE_TEST,
     WATER_BALLOON_TEST,
     CRADLE_TEST,

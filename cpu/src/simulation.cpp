@@ -10,7 +10,7 @@
 
 Simulation::Simulation() {
     m_counts = NULL;
-    init(WRECKING_BALL);
+    init(FRICTION_TEST);
     debug = true;
 }
 
@@ -95,6 +95,9 @@ void Simulation::init(SimulationType type) {
         break;
     case GAS_ROPE_TEST:
         initRopeGas();
+        break;
+    case GAS_TEST:
+        initGas();
         break;
     case WATER_BALLOON_TEST:
         initWaterBalloon();
@@ -529,6 +532,7 @@ void Simulation::drawGrid() {
 }
 
 void Simulation::drawParticles() {
+    // cout << "========================================" << endl;
     for (int i = 0; i < m_particles.size(); i++) {
         const Particle *p = m_particles[i];
 
@@ -541,6 +545,7 @@ void Simulation::drawParticles() {
         } else {
             glColor3f(0, 0, 1);
         }
+        // cout << "Particle " << i << " at " << p->p.x << ", " << p->p.y << endl;
 
         glPushMatrix();
         glTranslatef(p->p.x, p->p.y, 0);
@@ -550,6 +555,7 @@ void Simulation::drawParticles() {
     }
 
     glEnd();
+    // cout << "--------------------------------------" << endl;
 }
 
 void Simulation::drawBodies() {
@@ -741,7 +747,7 @@ void Simulation::initBoxes() {
     m_xBoundaries = glm::dvec2(-20, 20);
     m_yBoundaries = glm::dvec2(0, 1000000);
 
-    int numBoxes = 25, numColumns = 2;
+    int numBoxes = 10, numColumns = 2;
     double root2 = sqrt(2);
     QList<Particle *> vertices;
     QList<SDFData> data;
@@ -752,7 +758,8 @@ void Simulation::initBoxes() {
     data.append(SDFData(glm::normalize(glm::dvec2(1, -1)), PARTICLE_RAD * root2));
     data.append(SDFData(glm::normalize(glm::dvec2(1, 1)), PARTICLE_RAD * root2));
 
-    for (int j = -numColumns; j <= numColumns; j++) {
+    // for (int j = -numColumns; j <= numColumns; j++) {
+    for (int j = 0; j < 1; j++) {
         glm::ivec2 dim = glm::ivec2(3, 2);
         for (int i = numBoxes - 1; i >= 0; i--) {
             for (int x = 0; x < dim.x; x++) {
@@ -1088,9 +1095,8 @@ void Simulation::initSmokeOpen() {
     m_yBoundaries = glm::dvec2(-2 * scale, 100 * scale);
     QList<Particle *> particles;
 
-    double start = -2 * scale;
-    for (double x = start; x < start + (4 * scale); x += delta) {
-        for (double y = -2 * scale; y < 2 * scale; y += delta) {
+    for (double x = -2 * scale; x < 2 * scale; x += delta) {
+        for (double y = -1.5 * scale; y < 2 * scale; y += delta) {
             particles.append(new Particle(glm::dvec2(x, y) + .2 * glm::dvec2(frand() - .5, frand() - .5), 1));
         }
     }
