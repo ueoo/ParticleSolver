@@ -19,7 +19,7 @@ View::View(QWidget *parent) : QGLWidget(parent) {
     scale = 10;
     tickTime = 0.0;
     timestepMode = true;
-    current = FRICTION_TEST;
+    current = SMOKE_OPEN_TEST;
 }
 
 View::~View() {

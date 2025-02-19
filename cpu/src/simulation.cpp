@@ -10,7 +10,7 @@
 
 Simulation::Simulation() {
     m_counts = NULL;
-    init(FRICTION_TEST);
+    init(SMOKE_OPEN_TEST);
     debug = true;
 }
 
@@ -188,11 +188,11 @@ void Simulation::tick(double seconds) {
         for (int j = i + 1; j < m_particles.size(); j++) {
             Particle *p2 = m_particles[j];
 
-            // Skip collision between two immovables
+            // Skip collision between two immovable particles
             if (p->imass == 0 && p2->imass == 0) {
                 continue;
 
-                // Skip collisions betwee particles in the same rigid body
+                // Skip collisions between particles in the same rigid body
             } else if (p->ph == SOLID && p2->ph == SOLID && p->bod == p2->bod && p->bod != -1) {
                 continue;
             } else {
